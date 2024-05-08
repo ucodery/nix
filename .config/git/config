@@ -1,0 +1,8 @@
+[user]
+	email = ucodery@gmail.com
+	name = Jeremiah Paige
+[diff "bin"]
+	textconv = hexdump -v -C
+	binary = true
+[url "git@github.com:"]
+	insteadOf = https://github.com/
