@@ -1,0 +1,86 @@
+live_config_reload = true
+
+[bell]
+animation = "EaseOutExpo"
+# Same as primary background color. This will briefly remove transparency
+color = "#1d1f21"
+duration = 75
+
+[colors.cursor]
+cursor = "#894E63"
+
+[cursor]
+unfocused_hollow = true
+
+[cursor.style]
+blinking = "Off"
+shape = "Block"
+
+[env]
+TERM = "alacritty"
+
+[font]
+builtin_box_drawing = true
+size = 13.0
+
+[font.bold]
+family = "UbuntuMono Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "UbuntuMono Nerd Font Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "UbuntuMono Nerd Font Mono"
+style = "Italic"
+
+[font.normal]
+family = "UbuntuMono Nerd Font Mono"
+style = "Regular"
+
+[[hints.enabled]]
+command = "open"
+post_processing = true
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`]+"
+
+[hints.enabled.mouse]
+enabled = true
+mods = "Command"
+
+# Send proper key-code to neovim
+[[keyboard.bindings]]
+chars = "\u001B[13;2u"
+key = "Return"
+mods = "Shift"
+
+# Send proper key-code to neovim
+[[keyboard.bindings]]
+chars = "\u001B[13;5u"
+key = "Return"
+mods = "Control"
+
+[[mouse.bindings]]
+action = "PasteSelection"
+mouse = "Middle"
+
+[[mouse.bindings]]
+action = "PasteSelection"
+mods = "Command"
+mouse = "Right"
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[selection]
+save_to_clipboard = true
+semantic_escape_chars = ",│`|:;\"' ()[]{}<>\t"
+
+[shell]
+args = ["-c", ":edit term:///Users/jeremyp/.nix-profile/bin/bash -il"]
+program = "/Users/jeremyp/.nix-profile/bin/nvim"
+
+[window]
+opacity = 0.9
+decorations = "None"

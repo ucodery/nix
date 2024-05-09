@@ -1,0 +1,197 @@
+# global options
+format = """
+$status$cmd_duration \
+$username($hostname$localip)$directory \
+$git_branch$git_status$git_state \
+($env_var )\
+$c$rust$python$perl$ruby$lua$nodejs$golang$elm\
+$package\
+$fill\
+$shlvl$jobs$time$character\
+$line_break[_](mint)"""
+
+# color test
+# $line_break[lightgrey](lightgrey) [linen](linen) [mint](mint) [pink](pink) [brick](brick) [clay](clay) [rouge](rouge) [turquoise](turquoise) [sunflower](sunflower) [lilac](lilac) [darklilac](darklilac) [amethyst](amethyst) [purps](purps) [shadow](shadow) [midnight](midnight)\
+
+scan_timeout = 10
+command_timeout = 200
+add_newline = false
+continuation_prompt = '[━](mint)'
+palette = 'witchhazel'
+
+[line_break]
+disabled = false
+
+[fill]
+symbol = ' '
+
+# command status
+
+[status]
+disabled = false
+symbol = '[❮](rouge)'
+success_symbol = '[❮](mint)'
+sigint_symbol = '!'
+format = '[$success_symbol](bold green)[$symbol](bold red)[$sigint_symbol$status(-$common_meaning)( \[$signal_number(-SIG$signal_name)\])]($style)'
+style = 'rouge'
+
+[cmd_duration]
+disabled = false
+min_time = 0
+show_milliseconds = true
+format = '⏳ [$duration]($style)'
+style = 'clay'
+
+# /command status
+
+[time]
+disabled = false
+use_12hr = false
+utc_time_offset = '0'
+format = '[($time)Z]($style)'
+style = 'lilac'
+
+# location
+
+[username]
+show_always = true
+format = '[$user]($style)'
+style_root = 'rouge'
+style_user = 'amethyst'
+
+[hostname]
+ssh_only = false
+format = '[(@$hostname)]($style)'
+style = 'amethyst'
+
+[localip]
+disabled = true
+ssh_only = false
+format = '[(\[$localipv4\])]($style)'
+style = 'purps'
+
+[directory]
+truncation_length = 3
+truncate_to_repo = false
+truncation_symbol = '.../'
+format = '[://$path]($style)'
+style = 'amethyst'
+
+# /location
+
+# VCS
+
+
+[git_branch]
+format = '[$symbol$branch(:$remote_name/$remote_branch)]($style)'
+style = 'lightgrey'
+symbol = ''
+
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\)'
+style = 'lightgrey'
+
+[git_status]
+format = '[\[$all_status$ahead_behind\]]($style)'
+style = 'lightgrey'
+
+# /VCS
+
+[env_var.AS_PLATFORM]
+format = '[($env_value$symbol)]($style)'
+style = 'brick'
+symbol = '🅰️ '
+default = ''
+
+# Languages
+
+[c]
+format = '[$name-$version$symbol]($style)'
+style = 'dimmed blue'
+symbol = '🄲 '
+
+[perl]
+format = '[$version$symbol]($style)'
+symbol = '🧅 '
+style = 'dimmed bright-blue'
+
+[python]
+format = '[(${virtualenv}@)]($style)[$version$symbol]($style)'
+symbol = '🐍 '
+style = 'dimmed green'
+
+[ruby]
+format = '[$version$symbol]($style)'
+symbol = '💎 '
+style = 'dimmed red'
+
+[lua]
+format = '[$version$symbol]($style)'
+style = 'bold blue'
+
+[rust]
+format = '[$version$symbol]($style)'
+symbol = '🦀 '
+style = 'dimmed red'
+
+[nodejs]
+format = '[$version$symbol]($style)'
+style = 'dimmed yellow'
+
+[golang]
+format = '[$version$symbol]($style)'
+symbol = '🐹 '
+style = 'dimmed cyan'
+
+[elm]
+format = '[$version$symbol]($style)'
+style = 'green'
+
+# /Languages
+
+[package]
+format = '[$version$symbol]($style)'
+symbol = '📦 '
+style = 'clay'
+display_private = true
+
+# shell environment
+
+[shlvl]
+disabled = false
+threshold = 0
+repeat = true
+format = '[$symbol]($style)'
+style = 'lightgrey'
+symbol ='⍗ '
+
+[jobs]
+number_threshold = 1
+symbol = '⚒ '
+style = 'lightgrey'
+format = '[$number$symbol]($style)'
+
+[character]
+success_symbol = '[❯](mint)'
+error_symbol = '[❯](rouge)'
+vicmd_symbol = '[❯](pink)'
+
+# /shell environment
+
+# From Witch Hazel (https://github.com/theacodes/witchhazel)
+[palettes.witchhazel]
+lightgrey = '#b0bec5'
+linen = '#F8F8F2'
+mint = '#C2FFDF'
+pink = '#FFB8D1'
+brick = '#DC7070'
+clay = '#A8757B'
+rouge = '#960050'
+turquoise = '#1BC5E0'
+sunflower = '#FFF352'
+lilac = '#CEB1FF'
+darklilac = '#C5A3FF'
+amethyst = '#716799'
+purps = '#433E56'
+shadow = '#3B364E'
+midnight = '#1e0010'
