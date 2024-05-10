@@ -1,0 +1,3 @@
+# to automatically apply repo changes, on a new machine run
+# cp post-commit .git/hooks/
+nix run .config/home-manager/ -- switch -f .config/home-manager/home.nix
