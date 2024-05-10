@@ -12,12 +12,9 @@
   home.packages = [
     # Terminal
     pkgs.alacritty
-    pkgs.bront_fonts
-    pkgs.bash
     pkgs.nerdfonts
 
     # Shell
-    pkgs.bash-completion
     pkgs.bat
     pkgs.bat-extras.batdiff
     pkgs.bat-extras.batgrep
@@ -119,4 +116,16 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  programs.bash = {
+    enable = true;
+    enableCompletion = true;
+  };
+
+  # Let direnv manage project-specific development environments
+  programs.direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      nix-direnv.enable = true;
+    };
 }
