@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+# vi: ft=bash
+
+# Edit files in containing NeoVim instance
+# Usage: edit [new | in] [below | left | above | right | here] [block] [--] [file ..]
+# Arguments:
+#   new     Create a new window to edit the file(s) [default]
+#   in      Open new buffers in an existing window
+#   below   Split the current window and open new buffers in the lower window
+#           or open new buffers in the existing window below the current
+#   left    Vsplit the current window and open new buffers in the left window
+#           or open new buffers in the existing window to the left of the current
+#   above   Split the current window and open new buffers in the upper window
+#           or open new buffers in the existing window above the current [default]
+#   right   Vsplit the current window and open new buffers in the right window
+#           or open new buffers in the existing window to the right of the current
+#   here    Use the current window. This ignores the <new> and <in> arguments but
+#           instead always opens buffers in the existing window
+#   block   Edit does not exit until the first file given is unloaded from nvim
+#           If no files are given, will never block
+#           By default edit will return success as soon as all files are opened in
+#           new buffers
+#   --      All following arguments are file names
+#   file    Open all files in nvim buffers. The first file given will be loaded into
+#           the specified window.
+#           If <block> was spedified, only the first file buffer is waited on
+#           If no files given, open a scratch file
+edit () {
+    local new_window='true'
+    local window_direction='above'
+    local blocking=false
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            'new')
+                new_window='true'
+                shift
+                continue
+            ;;
+            'in')
+                new_window=false
+                shift
+                continue
+            ;;
+            'block')
+                blocking='true'
+                shift
+                continue
+            ;;
+            'here'|'below'|'left'|'above'|'right')
+                window_direction="$1"
+                shift
+                continue
+            ;;
+            '--')
+                shift
+                break
+            ;;
+            *)
+                break
+            ;;
+        esac
+    done
+
+    local first_file="$(realpath "$1" 2> /dev/null || true)"
+    shift
+    local files=()
+    while [ $# -gt 0 ]; do
+        files+=($(realpath "$1"))
+        shift
+    done
+
+    local nvim_cmd
+    case "$window_direction" in
+        'below')
+            if [ "$new_window" == 'true' ]; then
+                nvim_cmd=":belowright :split"
+            else
+                nvim_cmd=":wincmd j"
+            fi
+        ;;
+        'left')
+            if [ "$new_window" == 'true' ]; then
+                nvim_cmd=":aboveleft :vsplit"
+            else
+                nvim_cmd=":wincmd h"
+            fi
+        ;;
+        'above')
+            if [ "$new_window" == 'true' ]; then
+                nvim_cmd=":aboveleft :split"
+            else
+                nvim_cmd=":wincmd k"
+            fi
+        ;;
+        'right')
+            if [ "$new_window" == 'true' ]; then
+                nvim_cmd=":belowright :vsplit"
+            else
+                nvim_cmd=":wincmd l"
+            fi
+        ;;
+        # 'here' does not require window actions
+    esac
+    if [ -z "$first_file" ]; then
+        nvim_cmd="${nvim_cmd} | :enew"
+    else
+        nvim_cmd="${nvim_cmd} | :edit ${first_file}"
+    fi
+    nvim_cmd="<C-\\><C-N>${nvim_cmd}<CR>"
+    # two step nvim is a workaround until --remote-silent supports optional `cmd` argument
+    nvim --server $NVIM --remote-send "$nvim_cmd"
+    if [ ${#files[@]} -gt 0 ]; then
+        nvim --server $NVIM --remote "${files[@]}"
+    fi
+
+    # workaround until `--remote-wait` is implemented
+    if [ "$blocking" == 'true' ] && [ ! -z "$first_file" ]; then
+        if [ -e "$first_file" ]; then
+            local t=$(date -r $first_file)
+            while [ "$t" == "$(date -r $first_file)" ]; do
+               sleep 0.25
+            done
+        else
+            until [ -e "$first_file" ]; do
+                sleep 0.25
+            done
+        fi
+    fi
+}
+
+edit "$@"

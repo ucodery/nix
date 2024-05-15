@@ -32,7 +32,6 @@
     pkgs.lsd
     pkgs.nix-bash-completions
     pkgs.ripgrep
-    pkgs.starship
 
     # Editor
     pkgs.lua-language-server
@@ -82,6 +81,10 @@
     ".config/nvim/lua/me/treesitter.lua".source = ../nvim/lua/me/treesitter.lua;
     ".config/nvim/lua/me/null-ls.lua".source = ../nvim/lua/me/null-ls.lua;
     ".config/nvim/lua/me/transparent.lua".source = ../nvim/lua/me/transparent.lua;
+    ".config/ptpython/config.py".source = ../ptpython/config.py;
+    ".config/python/config.py".source = ../python/config.py;
+    "bin/edit".source = ../../bin/edit;
+    ".inputrc".source = ../../.inputrc;
     # # Building this configuration will create a copy of 'dotfiles/screenrc' in
     # # the Nix store. Activating the configuration will then make '~/.screenrc' a
     # # symlink to the Nix store copy.
@@ -111,7 +114,13 @@
   #  /etc/profiles/per-user/jeremyp/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    PATH = "$HOME/.local/bin:$HOME/bin:$PATH";
+    EDITOR = "edit here block --";
+    VISUAL = "${config.home.sessionVariables.EDITOR}";
+    CLICOLOR = "1";
+    GIT_PAGER = "delta";
+    TERM = "alacritty";
+    SHELL = "bash";
   };
 
   # Let Home Manager install and manage itself.
@@ -120,12 +129,36 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
+    historyControl = [ "ignoredups" "ignorespace" ];
+    shellOptions = [ "vi" ];
+    shellAliases = {
+      g = "git";
+      e = "edit";
+      ls = "ls -hlAB --color=always";
+      lsd = "lsd --total-size -lA";
+      cat = "bat";
+      man = "batman";
+      pretty = "prettybat";
+    };
+    profileExtra = ''
+      # each local bash module should be a function and will be imported
+      # into the current session for use
+      for bash_module in ~/.local/lib/bash/*
+      do
+        source $bash_module
+      done
+    '';
   };
 
   # Let direnv manage project-specific development environments
   programs.direnv = {
-      enable = true;
-      enableBashIntegration = true;
-      nix-direnv.enable = true;
-    };
+    enable = true;
+    enableBashIntegration = true;
+    nix-direnv.enable = true;
+  };
+
+  programs.starship = {
+    enable = true;
+    enableBashIntegration = true;
+  };
 }

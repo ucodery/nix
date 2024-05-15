@@ -6,3 +6,8 @@
 	binary = true
 [url "git@github.com:"]
 	insteadOf = https://github.com/
+[init]
+	defaultBranch = main
+[alias]
+	s = status
+	d = diff

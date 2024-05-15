@@ -1,0 +1,27 @@
+set editing-mode vi
+# Alternate escape sequences ("jj" not appropriate)
+"\C-j": vi-movement-mode
+
+# Only prepend color to the line if the program's rc is set to clear color at some point
+
+$if Bash
+set show-mode-in-prompt on
+# set bar cursor and match mint color from starship.toml
+set vi-cmd-mode-string "\x1b[\x32 q\1\033[38;2;255;243;82m\2❯\033[0;00m"
+# set block cursor and match sunflower color from starship.toml
+set vi-ins-mode-string "\x1b[\x36 q\1\033[38;2;194;255;223m\2❯\033[0;00m"
+# "foreground" a process without the command going in history
+"\C-x": " fg\C-m"
+"\C-f": redraw-current-line
+set keymap vi-command
+"\C-f": redraw-current-line
+$endif
+
+$if Python
+set show-mode-in-prompt on
+set vi-cmd-mode-string \1\033[38;2;255;243;82m\2❯❯❯\033[0;00m
+set vi-ins-mode-string \1\033[38;2;194;255;223m\2❯❯❯\033[0;00m
+"\C-f": redraw-current-line
+set keymap vi-command
+"\C-f": redraw-current-line
+$endif

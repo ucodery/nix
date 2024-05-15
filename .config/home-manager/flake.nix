@@ -13,8 +13,10 @@
     let
       system = "x86_64-darwin";
       pkgs = nixpkgs.legacyPackages.${system};
-    in {
+    in
+    {
       defaultPackage.x86_64-darwin = home-manager.defaultPackage.x86_64-darwin;
+      formatter.x86_64-darwin = nixpkgs.legacyPackages.x86_64-darwin.nixpkgs-fmt;
       homeConfigurations."jeremyp" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
