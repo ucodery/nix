@@ -32,12 +32,14 @@
     pkgs.lsd
     pkgs.nix-bash-completions
     pkgs.ripgrep
+    pkgs.shellcheck
+    pkgs.shfmt
 
     # Editor
     pkgs.lua-language-server
     pkgs.neovim
     pkgs.nodejs
-    pkgs.nodePackages.pyright
+    pkgs.pyright
     pkgs.nodePackages.vim-language-server
     pkgs.tree-sitter
 
@@ -83,8 +85,10 @@
     ".config/nvim/lua/me/transparent.lua".source = ../nvim/lua/me/transparent.lua;
     ".config/ptpython/config.py".source = ../ptpython/config.py;
     ".config/python/config.py".source = ../python/config.py;
-    "bin/edit".source = ../../bin/edit;
     ".inputrc".source = ../../.inputrc;
+    ".ssh/config".source = ../../.ssh/config;
+    "bin/edit".source = ../../bin/edit;
+    "bin/gen".source = ../../bin/gen;
     # # Building this configuration will create a copy of 'dotfiles/screenrc' in
     # # the Nix store. Activating the configuration will then make '~/.screenrc' a
     # # symlink to the Nix store copy.
@@ -119,7 +123,6 @@
     VISUAL = "${config.home.sessionVariables.EDITOR}";
     CLICOLOR = "1";
     GIT_PAGER = "delta";
-    TERM = "alacritty";
     SHELL = "bash";
   };
 
@@ -130,7 +133,6 @@
     enable = true;
     enableCompletion = true;
     historyControl = [ "ignoredups" "ignorespace" ];
-    shellOptions = [ "vi" ];
     shellAliases = {
       g = "git";
       e = "edit";

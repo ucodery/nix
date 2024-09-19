@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+# vi: ft=bash
+
+# Initiate a new dev environment
+# Usage: gen [projroot] [--base]
+# Arguments:
+#   projroot  Location to create new environment. Should be a directory. If not
+#             provided, the current directory is assumed
+# Options:
+#   --base    If provided, don't install development packages or update pip
+
+gen() {
+	local root base envrc
+	if [ -n "$1" ]; then
+		if [ ! -e "$1" ]; then
+			root=$1
+			mkdir -p "$root"
+		elif [ -d "$1" ]; then
+			root=$1
+		else
+			root=$(dirname "$1")
+		fi
+		shift
+	else
+		root=$(pwd)
+	fi
+
+	if [[ "$1" == --base ]]; then
+		base=true
+	else
+		base=false
+	fi
+
+	envrc="$root/.envrc"
+	if [ -e "$envrc" ]; then
+		echo "direnv already exists at $1, not overriding"
+		exit 1
+	fi
+
+	# find THE development language
+	local priority=255 devlang="" py_priority
+
+	py_priority=$(py_is_proj "$root")
+	if [[ "$py_priority" != "0" ]]; then
+		if [[ "$py_priority" == "$priority" ]]; then
+			devlang=conflict
+		elif [[ "$py_priority" -lt "$priority" ]]; then
+			priority=$py_priority
+			devlang=python
+		fi
+	fi
+
+	if [[ -n "$devlang" ]]; then
+		${devlang}_proj_gen "$envrc"
+	fi # else no matches
+
+	# add all language runtimes
+	if [[ "$devlang" != "python" ]] && py_needed "$root"; then
+		py_gen "$envrc"
+	fi
+
+	if [ -e "$envrc" ]; then
+		# safe as gen will exit if it didn't write a new .envrc
+		direnv allow "$root"
+	fi
+
+	# inflate runtimes
+	if [[ "$base" == false ]]; then
+		direnv exec "$root" python -m pip install -U pip
+		direnv exec "$root" python -m pip install ~/.config/python/requirements.txt
+		if [[ "$devlang" == "python" ]]; then
+			direnv exec "$root" python -m pip install -e "$root"
+		fi
+	fi
+}
+
+conflict_proj_gen() {
+	echo "WARNING: Could not determine a single development language. Applying all languages as runtimes"
+}
+
+# return a positive number if a Python project configuration file is found
+# return 0 if no such file is found
+# the number returned represents the depth of the found file[s] (highest found file)
+# this represents a sort of priority where 1 is higher than 2, etc
+py_is_proj() {
+	: ${1:? internal error: gen_py_flake takes a path arg}
+	trap "$(shopt -p globstar nullglob)" RETURN
+	shopt -s globstar nullglob
+
+	local depth top_found=0
+	for proj_file in **/pyproject.toml **/setup.py **/setup.cfg; do
+		depth=$(echo "${proj_file/$1/}" | tr -cd '/' | wc -c | tr -d ' ')
+		if [[ "$top_found" == "0" || "$depth" -lt "$top_found" ]]; then
+			top_found="$depth"
+		fi
+	done
+	return "$top_found"
+}
+
+py_needed() {
+	: ${1:? internal error: gen_py_flake takes a path arg}
+
+	[[ $(find "$1" -type f -name '*.py' 2>/dev/null) ]]
+}
+
+python_proj_gen() {
+	: ${1:? internal error: gen_py_flake takes a path arg}
+
+	nix flake init --template "https://flakehub.com/f/the-nix-way/dev-templates/*#python"
+	# tempalte creates .envrc for us, but we will insert extra lines before and after it
+	cat >"$1" <<-EOF
+		# GEN PY PROJ
+		use flake
+		export PYTHONSTARTUP=~/.config/python/config.py
+	EOF
+}
+
+py_gen() {
+	: ${1:? internal error: gen_py_flake takes a path arg}
+
+	cat >>"$1" <<-EOF
+		# GEN PY
+		use flake "github:the-nix-way/dev-templates?dir=python"
+		export PYTHONSTARTUP=~/.config/python/config.py
+	EOF
+
+}
+
+gen "$@"
