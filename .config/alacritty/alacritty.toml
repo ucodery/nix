@@ -83,4 +83,4 @@ program = "/Users/jeremyp/.nix-profile/bin/nvim"
 
 [window]
 opacity = 0.9
-decorations = "None"
+decorations = "Buttonless"

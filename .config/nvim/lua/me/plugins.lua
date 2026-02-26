@@ -14,6 +14,7 @@ end
 local packer = require 'packer'
 
 packer.init {
+  git = { cmd = '/Users/jeremyp/.nix-profile/bin/git' },
   display = {
     open_fn = function()
       return require('packer.util').float { border = 'rounded' }

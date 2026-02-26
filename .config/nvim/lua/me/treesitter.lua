@@ -1,6 +1,9 @@
 local treesitter = require 'nvim-treesitter.configs'
 local installer = require 'nvim-treesitter.install'
 
+-- prefer brew's gcc to Apple's clang
+installer.compilers = { "/Users/jeremyp/.nix-profile/bin/cc", "/Users/jeremyp/.nix-profile/bin/gcc", unpack(installer.compilers) }
+
 treesitter.setup {
   ensure_installed = {
     "ada",
@@ -161,6 +164,3 @@ treesitter.setup {
     enable = true,
   },
 }
-
--- prefer brew's gcc to Apple's clang
-installer.compilers = { "/usr/local/bin/gcc-13", unpack(installer.compilers) }

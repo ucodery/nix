@@ -12,7 +12,7 @@
   home.packages = [
     # Terminal
     pkgs.alacritty
-    pkgs.nerdfonts
+    pkgs.nerd-fonts.ubuntu-mono
 
     # Shell
     pkgs.bat
@@ -31,7 +31,9 @@
     pkgs.jq
     pkgs.lsd
     pkgs.nix-bash-completions
+    pkgs.postgresql
     pkgs.ripgrep
+    pkgs.python313
     pkgs.shellcheck
     pkgs.shfmt
 
@@ -39,8 +41,9 @@
     pkgs.lua-language-server
     pkgs.neovim
     pkgs.nodejs
-    pkgs.pyright
     pkgs.nodePackages.vim-language-server
+    pkgs.pyright
+    pkgs.rust-analyzer
     pkgs.tree-sitter
 
     # Presenting
@@ -118,13 +121,16 @@
   #  /etc/profiles/per-user/jeremyp/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    PATH = "$HOME/.local/bin:$HOME/bin:$PATH";
     EDITOR = "edit here block --";
     VISUAL = "${config.home.sessionVariables.EDITOR}";
     CLICOLOR = "1";
     GIT_PAGER = "delta";
     SHELL = "bash";
   };
+  home.sessionPath = [
+    "$HOME/.local/bin"
+    "$HOME/bin"
+  ];
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
@@ -149,6 +155,11 @@
       do
         source $bash_module
       done
+      # be done with Apple's /usr/bin
+      if [ -d /Users/jeremyp/.local/usr/bin ]; then
+        PATH="$(echo :"$PATH": | sed -e 's/:\/usr\/bin:/:\/Users\/jeremyp\/.local\/usr\/bin:/' -e 's/^.//' -e 's/.$//')"
+        export PATH
+      fi
     '';
   };
 

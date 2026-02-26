@@ -33,3 +33,6 @@ vim.opt.undofile = true
 vim.opt.hidden = true
 
 vim.opt.mouse = ''
+
+-- activate nix shell
+vim.opt.shellcmdflag = '-lc'
