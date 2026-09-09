@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # to automatically apply repo changes, on a new machine run
-# cp pre-commit .git/hooks/
-cd .config/home-manager/ && nix fmt
+# cp pre-commit post-commit .git/hooks/
+cd "$(git rev-parse --show-toplevel)/.config/home-manager" && nix fmt . && git add -u .

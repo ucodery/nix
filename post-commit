@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # to automatically apply repo changes, on a new machine run
-# cp post-commit .git/hooks/
-nix run .config/home-manager/ -- switch -f .config/home-manager/home.nix
+# cp pre-commit post-commit .git/hooks/
+cd "$(git rev-parse --show-toplevel)" && nix run .config/home-manager -- switch --flake .config/home-manager#jeremyp
