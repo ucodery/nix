@@ -1,3 +1,4 @@
+[general]
 live_config_reload = true
 
 [bell]
@@ -77,7 +78,7 @@ multiplier = 3
 save_to_clipboard = true
 semantic_escape_chars = ",│`|:;\"' ()[]{}<>\t"
 
-[shell]
+[terminal.shell]
 args = ["-c", ":edit term:///Users/jeremyp/.nix-profile/bin/bash -il"]
 program = "/Users/jeremyp/.nix-profile/bin/nvim"
 
