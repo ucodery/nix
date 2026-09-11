@@ -7,7 +7,7 @@
   home.homeDirectory = "/Users/jeremyp";
 
   # Configuration compatibility version. != running home-manager version
-  home.stateVersion = "23.11"; # Please read the documentation before changing.
+  home.stateVersion = "26.05"; # Please read the documentation before changing.
 
   home.packages = [
     # Terminal
@@ -125,7 +125,6 @@
 
   programs.neovim = {
     enable = true;
-    withRuby = false;
     initLua = builtins.readFile ../nvim/init.lua;
     # Plugins are pinned by nixpkgs, replacing packer.
     plugins = with pkgs.vimPlugins; [
