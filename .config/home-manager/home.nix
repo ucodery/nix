@@ -113,7 +113,7 @@
     VISUAL = "${config.home.sessionVariables.EDITOR}";
     CLICOLOR = "1";
     GIT_PAGER = "delta";
-    SHELL = "bash";
+    SHELL = "${pkgs.bashInteractive}/bin/bash";
   };
   home.sessionPath = [
     "$HOME/.local/bin"
