@@ -1,11 +1,3 @@
--- reload neovim whenever configuration is saved
-vim.cmd [[
-  augroup live_config
-    autocmd!
-    autocmd BufWritePost */nvim/*.lua,*/nvim/lua/**/*.lua source $MYVIMRC
-  augroup end
-]]
-
 vim.cmd [[
   augroup _auto_resize
     autocmd!
