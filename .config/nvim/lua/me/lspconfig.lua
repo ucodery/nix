@@ -27,4 +27,10 @@ vim.lsp.config('lua_ls', {
   },
 })
 
-vim.lsp.enable { 'pyright', 'lua_ls' }
+vim.lsp.enable { 'pyright', 'lua_ls', 'vimls' }
+-- rust-analyzer needs the project's toolchain: its root detection runs rustc and
+-- it drives cargo. Toolchains come from per-project direnv flakes, not home.nix,
+-- so enable it only when one is on PATH.
+if vim.fn.executable 'rustc' == 1 then
+  vim.lsp.enable 'rust_analyzer'
+end
