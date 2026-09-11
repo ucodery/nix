@@ -125,7 +125,8 @@
 
   # ~/.local/usr/bin mirrors /usr/bin minus Xcode's command-line-tools shims
   # (cc, git, python3, make, ...), which fail or prompt to install Xcode when no
-  # toolchain is present. profileExtra puts it on PATH in place of /usr/bin.
+  # toolchain is present. /etc/paths puts it on PATH in place of /usr/bin (see
+  # README.md); the switch warns when that edit is missing.
   # Rebuilt on every activation so it tracks the running macOS.
   home.activation.usrBinWithoutXcodeShims = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     target="$HOME/.local/usr/bin"
@@ -216,14 +217,6 @@
         [ -e "$bash_module" ] || continue # unmatched glob on a fresh machine
         source "$bash_module"
       done
-    '';
-    # .profile: login shells only; PATH is inherited by everything they start
-    profileExtra = ''
-      # be done with Apple's /usr/bin
-      if [ -d /Users/jeremyp/.local/usr/bin ]; then
-        PATH="$(echo :"$PATH": | sed -e 's/:\/usr\/bin:/:\/Users\/jeremyp\/.local\/usr\/bin:/' -e 's/^.//' -e 's/.$//')"
-        export PATH
-      fi
     '';
   };
 

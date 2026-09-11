@@ -20,10 +20,10 @@ them, so home-manager builds `~/.local/usr/bin` on every switch: a copy of
 `/usr/bin` as symlinks, minus the shims (see `usrBinWithoutXcodeShims` in
 `home.nix`). Then that directory replaces `/usr/bin` on `PATH`.
 
-Home-manager can only do that for its own shells: `.profile` rewrites `PATH`
-for login shells. Getting the replacement everywhere needs two system-level
-edits, which require `sudo` and so are not managed here. The activation script
-warns when the first one is missing.
+Putting it on `PATH` is a macOS matter, not a shell one, so home-manager does
+not touch `PATH` itself. It takes two system-level edits, which require `sudo`
+and so are not managed here. The activation script warns when the first one is
+missing.
 
 1. **Every login shell, including zsh and scripts run with `-l`.**
    `path_helper` builds the initial `PATH` from `/etc/paths`, so replace the
