@@ -110,6 +110,25 @@ vim.api.nvim_create_autocmd('WinLeave', {
   end,
 })
 
+-- nvim's working directory follows terminal 1: the shell announces its cwd at
+-- every prompt with OSC 7 (PROMPT_COMMAND in home.nix) and nvim :cd's to match
+vim.api.nvim_create_autocmd('TermRequest', {
+  group = group,
+  callback = function(args)
+    local dir = args.data.sequence:match '^\27%]7;file://[^/]*(/.*)$'
+    if dir == nil then
+      return
+    end
+    dir = dir:gsub('%%(%x%x)', function(h)
+      return string.char(tonumber(h, 16))
+    end)
+    seed()
+    if args.buf == slots[1] and vim.fn.isdirectory(dir) == 1 and dir ~= vim.fn.getcwd() then
+      vim.cmd.cd(vim.fn.fnameescape(dir))
+    end
+  end,
+})
+
 vim.keymap.set('n', '<leader><CR>', M.toggle, { silent = true, desc = 'terminal popup (count: terminal n)' })
 
 return M
