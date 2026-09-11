@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -122,6 +122,36 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  # ~/.local/usr/bin mirrors /usr/bin minus Xcode's command-line-tools shims
+  # (cc, git, python3, make, ...), which fail or prompt to install Xcode when no
+  # toolchain is present. profileExtra puts it on PATH in place of /usr/bin.
+  # Rebuilt on every activation so it tracks the running macOS.
+  home.activation.usrBinWithoutXcodeShims = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    target="$HOME/.local/usr/bin"
+    run rm -rf "$target.new"
+    run mkdir -p "$target.new"
+    for src in /usr/bin/*; do
+      if [ -f "$src" ] && ! /usr/bin/grep -q tool-shim "$src" 2>/dev/null; then
+        run ln -s "$src" "$target.new/"
+      fi
+    done
+    if [ -e "$target" ]; then
+      run mv "$target" "$target.old"
+    fi
+    run mv "$target.new" "$target"
+    run rm -rf "$target.old"
+    if ! /usr/bin/grep -qxF "$target" /etc/paths; then
+      printf >&2 '\e[1;33mwarning: /etc/paths does not list %s; see nix/README.md "Replacing Apple'"'"'s /usr/bin"\e[0m\n' "$target"
+    fi
+    # path_helper appends whatever PATH the terminal inherited, so /usr/bin
+    # survives at the end until launchd's own PATH is set (README step 2)
+    case ":$PATH:" in
+      *:/usr/bin:*)
+        printf >&2 '\e[1;33mwarning: /usr/bin is still on PATH (launchd default); see nix/README.md "Replacing Apple'"'"'s /usr/bin" step 2\e[0m\n'
+        ;;
+    esac
+  '';
 
   programs.neovim = {
     enable = true;
