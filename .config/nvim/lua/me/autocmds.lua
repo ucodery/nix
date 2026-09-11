@@ -5,30 +5,23 @@ vim.cmd [[
   augroup end
 ]]
 
--- terminals: no spelling, no gutter while typing, and Insert mode on entry
--- unless the cursor was moved off the edit line since the terminal was last
--- left. Position alone is not the signal: a resize makes the shell redraw its
--- prompt lower, moving the edit line under a cursor that never moved.
+-- terminals: no spelling and no number gutter in any mode. The pty is sized to
+-- the text area, so a gutter appearing on a mode switch would SIGWINCH the
+-- shell, which redraws (doubles) its prompt and wraps it. `:set number` still
+-- works when wanted.
 local term = vim.api.nvim_create_augroup('_custom_term', { clear = true })
 vim.api.nvim_create_autocmd('TermOpen', {
   group = term,
   callback = function()
     vim.opt_local.spell = false
-    vim.cmd.startinsert()
-  end,
-})
-vim.api.nvim_create_autocmd('TermEnter', {
-  group = term,
-  callback = function()
-    vim.opt_local.relativenumber = false
     vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.cmd.startinsert()
   end,
 })
 vim.api.nvim_create_autocmd('TermLeave', {
   group = term,
   callback = function()
-    vim.opt_local.relativenumber = true
-    vim.opt_local.number = true
     vim.b.term_paged = false -- Terminal mode leaves the cursor on the edit line
     vim.w.term_line = vim.fn.line '.'
   end,
