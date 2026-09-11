@@ -8,7 +8,7 @@ $c$rust$python$perl$ruby$lua$nodejs$golang$elm\
 $package\
 $fill\
 $shlvl$jobs$time$character\
-$line_break[_](mint)"""
+$line_break[ ]()"""
 
 # color test
 # $line_break[lightgrey](lightgrey) [linen](linen) [mint](mint) [pink](pink) [brick](brick) [clay](clay) [rouge](rouge) [turquoise](turquoise) [sunflower](sunflower) [lilac](lilac) [darklilac](darklilac) [amethyst](amethyst) [purps](purps) [shadow](shadow) [midnight](midnight)\
