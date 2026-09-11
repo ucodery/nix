@@ -1,5 +1,10 @@
 -- nvim-lspconfig now only ships server definitions (lsp/*.lua); neovim's own
 -- vim.lsp.config / vim.lsp.enable configure and start them.
+
+-- advertise nvim-cmp's completion support (snippets, resolve fields) to every server
+vim.lsp.config('*', {
+  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+})
 vim.lsp.config('pyright', {
   settings = {
     python = {},
