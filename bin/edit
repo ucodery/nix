@@ -25,6 +25,8 @@
 #           the specified window.
 #           If <block> was spedified, only the first file buffer is waited on
 #           If no files given, open a scratch file
+# Outside of a neovim terminal ($NVIM unset) there is nothing to attach to, so
+# the window arguments are ignored and a standalone nvim is run on the files.
 edit () {
     local new_window='true'
     local window_direction='above'
@@ -60,6 +62,10 @@ edit () {
             ;;
         esac
     done
+
+    if [ -z "$NVIM" ]; then
+        exec nvim "$@"
+    fi
 
     local first_file="$(realpath "$1" 2> /dev/null || true)"
     shift
