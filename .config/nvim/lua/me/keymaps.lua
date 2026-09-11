@@ -20,7 +20,18 @@ keymap('n', '<leader>n', ':set number! relativenumber!<CR>')
 keymap('n', '<leader>s', ':set spell!<CR>')
 keymap('n', '<leader>t', ':TransparentToggle<CR>')
 
-keymap('n', '<leader>f', ':lua vim.lsp.buf.formatting()<CR>')
+-- format the buffer with the LSP, or with 'formatprg' (see autocmds.lua) when
+-- no attached server can format
+local format = function()
+  if #vim.lsp.get_clients { bufnr = 0, method = 'textDocument/formatting' } > 0 then
+    vim.lsp.buf.format()
+  elseif vim.bo.formatprg ~= '' then
+    local view = vim.fn.winsaveview()
+    vim.cmd 'silent normal! gggqG'
+    vim.fn.winrestview(view)
+  end
+end
+vim.keymap.set('n', '<leader>f', format, { silent = true })
 
 -- resize windows
 keymap('n', '<S-Up>', ':resize +2<CR>')
