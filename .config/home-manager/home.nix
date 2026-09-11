@@ -71,20 +71,11 @@
     ".config/alacritty/alacritty.toml".source = ../alacritty/alacritty.toml;
     ".config/git/config".source = ../git/config;
     ".config/git/ignore".source = ../git/ignore;
-    ".config/home-manager/flake.nix".source = ./flake.nix;
-    ".config/home-manager/home.nix".source = ./home.nix;
     ".config/starship.toml".source = ../starship.toml;
-    ".config/nvim/lua/me/autocmds.lua".source = ../nvim/lua/me/autocmds.lua;
-    ".config/nvim/lua/me/keymaps.lua".source = ../nvim/lua/me/keymaps.lua;
-    ".config/nvim/lua/me/colors.lua".source = ../nvim/lua/me/colors.lua;
-    ".config/nvim/lua/me/lspconfig.lua".source = ../nvim/lua/me/lspconfig.lua;
-    ".config/nvim/lua/me/telescope.lua".source = ../nvim/lua/me/telescope.lua;
-    ".config/nvim/lua/me/alpha.lua".source = ../nvim/lua/me/alpha.lua;
-    ".config/nvim/lua/me/lsp.lua".source = ../nvim/lua/me/lsp.lua;
-    ".config/nvim/lua/me/global-options.lua".source = ../nvim/lua/me/global-options.lua;
-    ".config/nvim/lua/me/cmp.lua".source = ../nvim/lua/me/cmp.lua;
-    ".config/nvim/lua/me/treesitter.lua".source = ../nvim/lua/me/treesitter.lua;
-    ".config/nvim/lua/me/transparent.lua".source = ../nvim/lua/me/transparent.lua;
+    ".config/nvim/lua" = {
+      source = ../nvim/lua;
+      recursive = true;
+    };
     ".config/ptpython/config.py".source = ../ptpython/config.py;
     ".config/python/config.py".source = ../python/config.py;
     ".inputrc".source = ../../.inputrc;
