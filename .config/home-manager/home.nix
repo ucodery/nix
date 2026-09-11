@@ -206,13 +206,19 @@
       man = "batman";
       pretty = "prettybat";
     };
-    profileExtra = ''
+    # .bashrc: every interactive shell, including nvim's :terminal and a bare `bash`
+    initExtra = ''
       # each local bash module should be a function and will be imported
-      # into the current session for use
+      # into the current session for use. They are private to this machine
+      # and live outside this repo on purpose.
       for bash_module in ~/.local/lib/bash/*
       do
-        source $bash_module
+        [ -e "$bash_module" ] || continue # unmatched glob on a fresh machine
+        source "$bash_module"
       done
+    '';
+    # .profile: login shells only; PATH is inherited by everything they start
+    profileExtra = ''
       # be done with Apple's /usr/bin
       if [ -d /Users/jeremyp/.local/usr/bin ]; then
         PATH="$(echo :"$PATH": | sed -e 's/:\/usr\/bin:/:\/Users\/jeremyp\/.local\/usr\/bin:/' -e 's/^.//' -e 's/.$//')"
