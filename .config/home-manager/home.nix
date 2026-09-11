@@ -26,7 +26,6 @@
     pkgs.delta
     pkgs.dust
     pkgs.fd
-    pkgs.gcc
     pkgs.git
     pkgs.jq
     pkgs.lsd
@@ -45,7 +44,6 @@
     pkgs.pyright
     pkgs.rust-analyzer
     pkgs.stylua
-    pkgs.tree-sitter
     pkgs.vim-language-server
 
     # Presenting
