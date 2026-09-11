@@ -73,12 +73,13 @@ M.show = function(n)
     relayout()
   else
     float.win = vim.api.nvim_open_win(buf, true, layout())
-    -- what nvim sets on the window a terminal opens in; a float gets the
-    -- global defaults instead, and wrapping reflows old lines when the width
-    -- changes with the gutter
+    -- what the terminal autocmds set on the window a terminal opens in; a float
+    -- gets the global defaults instead
     vim.wo[float.win].wrap = false
     vim.wo[float.win].list = false
     vim.wo[float.win].spell = false
+    vim.wo[float.win].number = false
+    vim.wo[float.win].relativenumber = false
   end
   if new then
     vim.fn.jobstart(vim.o.shell, { term = true }) -- TermOpen starts Insert mode
