@@ -9,9 +9,9 @@ set editing-mode vi
 $if Bash
 set show-mode-in-prompt on
 # block cursor and sunflower color from starship.toml
-set vi-cmd-mode-string "\1\e[2 q\e[38;2;255;243;82m\2❯\1\e[0m\2"
+set vi-cmd-mode-string "\1\e[2 q\e[38;2;255;243;82m\2❯_\1\e[0m\2"
 # bar cursor and mint color from starship.toml
-set vi-ins-mode-string "\1\e[6 q\e[38;2;194;255;223m\2❯\1\e[0m\2"
+set vi-ins-mode-string "\1\e[6 q\e[38;2;194;255;223m\2❯_\1\e[0m\2"
 # "foreground" a process without the command going in history
 "\C-x": " fg\C-m"
 "\C-f": redraw-current-line
