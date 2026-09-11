@@ -14,11 +14,15 @@ vim.g.maplocalleader = ' '
 keymap('n', '<leader><leader>', ':', { desc = 'command line' })
 keymap('i', 'jj', '<ESC>')
 
--- toggles
-keymap('n', '<leader>h', ':set hls!<CR>', { desc = 'toggle search highlight' })
-keymap('n', '<leader>n', ':set number! relativenumber!<CR>', { desc = 'toggle line numbers' })
-keymap('n', '<leader>s', ':set spell!<CR>', { desc = 'toggle spelling' })
-keymap('n', '<leader>t', ':TransparentToggle<CR>', { desc = 'toggle transparency' })
+-- visual toggles
+keymap('n', '<leader>vh', ':set hls!<CR>', { desc = 'toggle search highlight' })
+keymap('n', '<leader>vn', ':set number! relativenumber!<CR>', { desc = 'toggle line numbers' })
+keymap('n', '<leader>vs', ':set spell!<CR>', { desc = 'toggle spelling' })
+keymap('n', '<leader>vt', ':TransparentToggle<CR>', { desc = 'toggle transparency' })
+
+-- telescope
+keymap('n', '<leader>sf', ':Telescope find_file', { desc = 'telescope find file' })
+keymap('n', '<leader>sg', ':Telescope live_grep', { desc = 'telescope grep' })
 
 -- format the buffer with the LSP, or with 'formatprg' (see autocmds.lua) when
 -- no attached server can format
@@ -99,9 +103,10 @@ keymap('n', '<C-T>q', ':tabclose<CR>')
 keymap('t', '<C-w>', '<C-\\><C-n><C-w>') -- window shortcuts work as in normal mode
 keymap('t', '<C-t>', '<C-\\><C-n>gt') -- tab shortcuts work as in normal mode
 keymap('t', '<C-u>', '<C-\\><C-n><C-u>')
-keymap('t', '<C-v>', '<C-\\><C-n><C-b>')
-keymap('n', '<C-w>T', ':vsplit term://bash<CR>')
-keymap('n', '<C-w>t', ':split term://bash<CR>')
+keymap('t', '<C-b>', '<C-\\><C-n><C-b>')
+keymap('t', '<S-CR>', '<C-\\><C-n>') -- quick enter normal mode
+keymap('n', '<C-w>T', ':vsplit term:bash<CR>')
+keymap('n', '<C-w>t', ':split term:bash<CR>')
 
 -- indent easier
 keymap('v', '<', '<gv')
