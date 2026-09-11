@@ -78,9 +78,14 @@ multiplier = 3
 save_to_clipboard = true
 semantic_escape_chars = ",│`|:;\"' ()[]{}<>\t"
 
+# Start nvim from a login shell so it inherits the home-manager session
+# environment (PATH with the nix profile and ~/bin, EDITOR, ...), which launchd
+# does not provide; every terminal nvim spawns then inherits it too. The first
+# terminal is a plain interactive shell: a nested login shell would re-run
+# path_helper and put /bin ahead of the nix profile.
 [terminal.shell]
-args = ["-c", ":edit term:///Users/jeremyp/.nix-profile/bin/bash -il"]
-program = "/Users/jeremyp/.nix-profile/bin/nvim"
+args = ["-lc", "exec nvim '+edit term:///Users/jeremyp/.nix-profile/bin/bash -i'"]
+program = "/Users/jeremyp/.nix-profile/bin/bash"
 
 [window]
 opacity = 0.9
