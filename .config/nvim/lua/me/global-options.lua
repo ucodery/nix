@@ -15,7 +15,7 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 0 -- set to the same as 'tabstop'
 vim.opt.list = true
 vim.opt.listchars = 'tab:@ ,conceal:~'
-vim.conceallevel = 2
+vim.opt.conceallevel = 2
 vim.opt.spell = true
 vim.opt.hlsearch = true
 
