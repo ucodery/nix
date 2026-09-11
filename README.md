@@ -11,3 +11,39 @@ However, there is a tiny bit of work to bootstrap a new system, after which nix 
     * `nix run ~/nix/.config/home-manager -- switch --flake ~/nix/.config/home-manager#jeremyp`
     * afterwards `home-manager switch --flake ~/nix/.config/home-manager#jeremyp` is on PATH,
       or `cp pre-commit post-commit .git/hooks/` to switch on every commit
+
+## Replacing Apple's /usr/bin
+
+macOS ships `/usr/bin` with ~95 Xcode "tool shims" (`cc`, `git`, `python3`,
+`make`, ...) that prompt to install Xcode and fail. Nothing can remove
+them, so home-manager builds `~/.local/usr/bin` on every switch: a copy of
+`/usr/bin` as symlinks, minus the shims (see `usrBinWithoutXcodeShims` in
+`home.nix`). Then that directory replaces `/usr/bin` on `PATH`.
+
+Replacing `/usr/bin` it on `PATH` is a macOS matter, so home-manager does
+not touch `PATH` itself. The activation script warns when the first one
+is missing.
+
+1. **Every login shell, including zsh and scripts run with `-l`.**
+   `path_helper` builds the initial `PATH` from `/etc/paths`, so replace the
+   `/usr/bin` line there with the mirror (`/etc/paths.d` can only add):
+
+   ```
+   sudo sed -i.bak "s|^/usr/bin$|$HOME/.local/usr/bin|" /etc/paths
+   ```
+
+   macOS updates may restore this file; the switch warning will say so.
+
+2. **Everything launchd starts (GUI apps and whatever they spawn).**
+   Those get launchd's default `PATH`, `/usr/bin:/bin:/usr/sbin:/sbin`. It
+   matters even for terminals: `path_helper` keeps whatever `PATH` the shell
+   inherited and appends it after `/etc/paths`, so `/usr/bin` survives at the
+   end and every shim the mirror omits is found there. The switch warns while
+   this is the case. Set the user domain's `PATH` once (takes effect after a
+   reboot):
+
+   ```
+   sudo launchctl config user path "$(tr '\n' : < /etc/paths)"
+   ```
+
+Non-interactive shells started from a shell inherit `PATH` and need nothing.
