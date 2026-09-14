@@ -69,8 +69,6 @@
     # them sourced into every interactive shell (functions + completion)
     ".local/bin/edit".source = ../../bin/edit;
     ".local/lib/bash/edit.bash".source = ../../bin/edit;
-    ".local/bin/gen".source = ../../bin/gen;
-    ".local/lib/bash/gen.bash".source = ../../bin/gen;
   };
 
   home.sessionVariables = {
