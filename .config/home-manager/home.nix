@@ -49,6 +49,7 @@
     pkgs.asciinema
     pkgs.ffmpeg
     pkgs.figlet
+    pkgs.complete-alias
   ];
 
   home.file = {
@@ -183,6 +184,9 @@
       # terminal 1 with it, see nvim/lua/me/terminal.lua
       __announce_cwd() { printf '\e]7;file://%s%s\e\\' "$HOSTNAME" "$PWD"; }
       PROMPT_COMMAND="__announce_cwd''${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+      # aliases complete like the command they expand to
+      source ${pkgs.complete-alias}/bin/complete_alias
+      complete -F _complete_alias "''${!BASH_ALIASES[@]}"
     '';
   };
 

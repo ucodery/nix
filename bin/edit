@@ -169,5 +169,5 @@ else
             COMPREPLY=($(compgen -f -- "$cur"))
         fi
     }
-    complete -o filenames -F _edit_complete edit e # e is the alias, see home.nix
+    complete -o filenames -F _edit_complete edit
 fi
