@@ -4,18 +4,18 @@
 # Edit files in containing NeoVim instance
 # Usage: edit [new | in] [below | left | above | right | here] [block] [--] [file ..]
 # Arguments:
-#   new     Create a new window to edit the file(s) [default]
-#   in      Open new buffers in an existing window
+#   new     Create a new window to edit the file(s)
+#   in      Open new buffers in an existing window [default]
 #   below   Split the current window and open new buffers in the lower window
 #           or open new buffers in the existing window below the current
 #   left    Vsplit the current window and open new buffers in the left window
 #           or open new buffers in the existing window to the left of the current
 #   above   Split the current window and open new buffers in the upper window
-#           or open new buffers in the existing window above the current [default]
+#           or open new buffers in the existing window above the current
 #   right   Vsplit the current window and open new buffers in the right window
 #           or open new buffers in the existing window to the right of the current
 #   here    Use the current window. This ignores the <new> and <in> arguments but
-#           instead always opens buffers in the existing window
+#           instead always opens buffers in the existing window [default]
 #   block   Edit does not exit until the first file given is unloaded from nvim
 #           If no files are given, will never block
 #           By default edit will return success as soon as all files are opened in
@@ -27,9 +27,12 @@
 #           If no files given, open a scratch file
 # Outside of a neovim terminal ($NVIM unset) there is nothing to attach to, so
 # the window arguments are ignored and a standalone nvim is run on the files.
+#
+# Executed, this runs edit. Sourced, it only defines edit and its completion,
+# so one file is both the command on PATH and the shell module (see home.nix).
 edit () {
-    local new_window='true'
-    local window_direction='above'
+    local new_window='false'
+    local window_direction='here'
     local blocking=false
     while [ $# -gt 0 ]; do
         case "$1" in
@@ -64,7 +67,8 @@ edit () {
     done
 
     if [ -z "$NVIM" ]; then
-        exec nvim "$@"
+        nvim "$@"
+        return
     fi
 
     local first_file="$(realpath "$1" 2> /dev/null || true)"
@@ -134,4 +138,36 @@ edit () {
     fi
 }
 
-edit "$@"
+if [ "${BASH_SOURCE[0]}" == "$0" ]; then
+    edit "$@"
+else
+    _edit_complete () {
+        local cur="${COMP_WORDS[COMP_CWORD]}"
+        local -a groups=('new in' 'here below left above right' 'block')
+        local open=0 i g
+        for ((i = 1; i < COMP_CWORD; i++)); do
+            case "${COMP_WORDS[i]}" in
+                'new'|'in') g=1 ;;
+                'here'|'below'|'left'|'above'|'right') g=2 ;;
+                'block') g=3 ;;
+                *) open=4; break ;; # -- or a file name: only files from here on
+            esac
+            (( g > open )) && open=$g
+        done
+
+        for ((g = open; g < ${#groups[@]}; g++)); do
+            COMPREPLY=($(compgen -W "${groups[g]}" -- "$cur"))
+            [ ${#COMPREPLY[@]} -gt 0 ] && return
+        done
+        if [[ "$cur" == -* ]] && (( open < 4 )); then
+            COMPREPLY=(--)
+            return
+        fi
+        if declare -F _filedir > /dev/null; then
+            _filedir # bash-completion: quoting, ~ expansion, trailing / on directories
+        else
+            COMPREPLY=($(compgen -f -- "$cur"))
+        fi
+    }
+    complete -o filenames -F _edit_complete edit e # e is the alias, see home.nix
+fi

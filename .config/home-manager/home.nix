@@ -64,8 +64,13 @@
     ".config/python/config.py".source = ../python/config.py;
     ".inputrc".source = ../../.inputrc;
     ".ssh/config".source = ../../.ssh/config;
-    "bin/edit".source = ../../bin/edit;
-    "bin/gen".source = ../../bin/gen;
+    # bin/* scripts double as shell modules: ~/.local/bin puts them on PATH for
+    # non-interactive callers ($EDITOR, other scripts); ~/.local/lib/bash gets
+    # them sourced into every interactive shell (functions + completion)
+    ".local/bin/edit".source = ../../bin/edit;
+    ".local/lib/bash/edit.bash".source = ../../bin/edit;
+    ".local/bin/gen".source = ../../bin/gen;
+    ".local/lib/bash/gen.bash".source = ../../bin/gen;
   };
 
   home.sessionVariables = {
@@ -77,7 +82,6 @@
   };
   home.sessionPath = [
     "$HOME/.local/bin"
-    "$HOME/bin"
   ];
 
   # Let Home Manager install and manage itself.
@@ -169,9 +173,9 @@
     };
     # .bashrc: every interactive shell, including nvim's :terminal and a bare `bash`
     initExtra = ''
-      # each local bash module should be a function and will be imported
-      # into the current session for use. They are private to this machine
-      # and live outside this repo on purpose.
+      # each bash module defines functions (and their completions) that are
+      # imported into the current session. Some are managed by home.file above;
+      # the rest are private to this machine and live outside this repo on purpose.
       for bash_module in ~/.local/lib/bash/*
       do
         [ -e "$bash_module" ] || continue # unmatched glob on a fresh machine
